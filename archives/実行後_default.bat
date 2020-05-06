@@ -75,6 +75,13 @@ rem     copy "D:\video\mp4\%%~nxa" D:\video\mp4\wbs
 rem     )
 
 
+rem     ::ファイル名に”めざまし"あればmezaにコピー
+rem     echo %filename% | find "めざまし" >NUL
+rem     if not ERRORLEVEL 1 copy "%%i" D:\video\mp4\meza\%%ni.mp4"
+rem 
+rem     ::ファイル名に”WBS”あればwbsにコピー
+rem     echo %filename% | find "WBS" >NUL
+rem     if not ERRORLEVEL 1 copy "%%i" "D:\video\mp4\wbs\%%ni.mp4"
 
 ::video
 :: ts  -sucseed

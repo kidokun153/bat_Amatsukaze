@@ -6,33 +6,36 @@ for %%i in ("%IN_PATH%") do set filename=%%~ni
 echo filename=%filename%
 
 ::tsフォルダのtxtをにlog_errに移動
-move "D:\video\ts\%filename%.ts.err" D:\video\ts\err_txt_log
+move D:\video\ts\*.ts.err D:\video\ts\err_txt_log
 
 ::tsフォルダのerrをlog_errに
-move "D:\video\ts\%filename%.ts.program.txt" D:\video\ts\err_txt_log
+move D:\video\ts\*.ts.program.txt D:\video\ts\err_txt_log
 
 ::tmpフォルダのenc.errをlog_errに
-move "D:\video\tmp\%filename%-enc.log" D:\video\ts\err_txt_log
+move D:\video\tmp\*-enc.log D:\video\ts\err_txt_log
+
+echo filename=%filename%
 
 ::10GB以上かの判断以上であればoverに格納
-::以下であればmp4フォルダに
-for /f "usebackq" %%i in ("D:\video\tmp\%filename%*.mp4") do (
-if %%~zi gtr 10737418240 (
-    rem 10GBを上回ったのでoverフォルダに
-    move "%%i" D:\video\tmp\over
-)  else ( 
-    rem 10GBを下回ったので処理
+::for /f "usebackq delims=" %%i in ("D:\video\tmp\%filename%*.mp4") do (
+for %%i in (D:\video\tmp\*.mp4) do (
 
-    ::ここまで共通 ここから分岐
+    if %%~zi gtr 10737418240 (
+        echo over 10GB 
+         move "%%i" D:\video\tmp\over
+    )  else ( 
+        echo under 10GB 
 
-    ::limitにコピー
-    copy "%%i" "D:\video\mp4\limit\%%ni.mp4"
+        ::ここまで共通 ここから分岐
 
-    ::ここまで分岐 ここから共通
+        ::mezaにコピー
+        echo D:\video\mp4\meza\%%~ni.mp4
+        copy "%%i" "D:\video\mp4\meza\%%~ni.mp4"
 
-    rem mp4フォルダにコピー
-    move "%%i" D:\video\mp4
-
+        ::ここまで分岐 ここから共通
+        
+        move "%%i" D:\video\mp4
+    )
 
 )
 
@@ -52,3 +55,4 @@ forfiles /P D:\video\mp4\meza /D -60 /M "*.mp4" /c "cmd /c del @file"
 
 ::2か月以上前のwbsのmp4削除
 forfiles /P D:\video\mp4\wbs /D -60 /M "*.mp4" /c "cmd /c del @file"
+
